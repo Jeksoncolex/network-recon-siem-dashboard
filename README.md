@@ -1,145 +1,274 @@
+````md id="94jnzm"
 # 🛡️ Enterprise SIEM Engineering: Automated Network Reconnaissance & Splunk Analytics
 
 ## 📋 1. Introduction
-In modern enterprise cybersecurity operations, establishing rapid perimeter visibility and tracking operational configuration drift is critical. This project demonstrates how **Nmap** can be systematically engineered for advanced host discovery and network reconnaissance, and how **Splunk Enterprise** can be leveraged as a centralized SIEM for data ingestion, complex event parsing, security visualization, and automated alerting metrics. By combining scanning utilities with big-data analytics platforms, this lab builds an active monitoring framework capable of detecting exposed assets, monitoring network mutations over time, and throwing instant alerts against high-risk anomalies.
+
+In modern enterprise cybersecurity operations, establishing rapid perimeter visibility and tracking operational configuration drift is critical.
+
+This project demonstrates how **Nmap** can be systematically engineered for advanced host discovery and network reconnaissance, and how **Splunk Enterprise** can be leveraged as a centralized SIEM for data ingestion, event parsing, visualization, and automated alerting.
+
+By combining scanning utilities with big-data analytics platforms, this lab creates an active monitoring framework capable of detecting exposed assets, monitoring network mutations over time, and generating alerts against high-risk anomalies.
 
 ---
 
-## 🎯 2. Objectives
-- **Strategic Asset Mapping:** Conduct high-fidelity network sweeps to isolate live targets, open port maps, and application service banners.
-- **Structured Log Generation:** Export raw reconnaissance data arrays into normalized, parser-ready XML formats to streamline downstream SIEM ingestion.
-- **SIEM Ingestion Pipelines:** Onboard, categorize, and index unstructured configuration schemas into a central Splunk data index cluster.
-- **Security Dashboard Architecture:** Build interactive Splunk visualization views to present actionable, real-time perimeter landscape telemetry.
-- **SIEM Alert Engineering:** Design automated alert logic parameters inside Splunk to flag:
-  - Detection of unmapped, unauthorized active host nodes.
-  - Exposure of critical, high-risk operational destination ports.
-  - Unexpected or unannounced service version changes on active infrastructure.
+# 🎯 2. Objectives
+
+- Conduct high-fidelity network sweeps to identify live targets and exposed services
+- Export reconnaissance data into structured XML format
+- Ingest network telemetry into Splunk Enterprise
+- Build Splunk dashboards for security visibility
+- Create SIEM alerts for:
+  - New hosts detected
+  - Critical ports exposed
+  - Service version changes
 
 ---
 
-## 🛠️ 3. Tools & Infrastructure Matrix
-- **Network Discovery Tool:** Nmap (Network Mapper) for signature scanning, service enumeration, and OS fingerprinting.
-- **SIEM Core:** Splunk Enterprise (Local Instance) for log aggregation, pattern searching, dashboard creation, and rule alerting.
-- **Validation Sandbox:** Isolated virtual subnet range configured to simulate live host scanning without impacting production service stability.
-- **Deployment Environments:** Kali Linux (Reconnaissance Node), macOS (Centralized Splunk SIEM Monitoring Stack).
-- **Hypervisor Core:** VMware Fusion.
+# 🛠️ 3. Tools & Infrastructure Matrix
+
+| Technology | Purpose |
+|---|---|
+| Nmap | Host discovery & reconnaissance |
+| Splunk Enterprise | SIEM monitoring & analytics |
+| Kali Linux | Offensive scanning environment |
+| macOS | Splunk deployment environment |
+| VMware Fusion | Virtualization platform |
 
 ---
 
-## 🚀 4. Technical Methodology
+# 🚀 4. Technical Methodology
 
-### 4.1 Running Strategic Nmap Scans
-Executed a targeted, multi-stage network scanning sequence to generate a complete footprint catalog of the target subnet:
+## 4.1 Passive Host Discovery (Ping Sweep)
 
-#### 1. Passive Host Discovery (Ping Sweep)
-Isolate live systems across the target block without initializing noisy port connections.
 ```bash
 nmap -sn 192.168.1.95/24
 ```
 
-#### 2. Localized Destination Port Discovery
-Scan primary communication channels across targeted endpoints to discover open connection pathways.
+### 🖼️ Scan Verification
+
+<p align="center">
+  <img src="./screenshots/Nmap-Syntax-Error.png" width="850"/>
+</p>
+
+---
+
+## 4.2 Open Port Discovery
+
 ```bash
-nmap -p 1-1000 192.168.95/24
+nmap -p 1-1000 192.168.1.95/24
 ```
 
-#### 3. Application Service Version Enumeration
-Probe listening connections to capture system banners and determine application version configurations.
+---
+
+## 4.3 Service Version Enumeration
+
 ```bash
 nmap -sV 192.168.1.95
 ```
 
-#### 4. Remote Operating System Footprinting
-Analyze TCP/IP stack response signatures to accurately profile the remote operating system vendor.
+---
+
+## 4.4 Remote Operating System Detection
+
 ```bash
 nmap -O 192.168.1.95
 ```
 
-#### 5. Aggressive Attack Surface Inspection
-Consolidate OS mapping, service version validation, script engine execution, and traceroute into an intense profiling string.
+---
+
+## 4.5 Aggressive Network Profiling
+
 ```bash
 nmap -A 192.168.1.95
 ```
 
-#### 6. Structured XML Telemetry Serialization
-Export comprehensive service scans directly into clean XML file formatting to guarantee smooth integration with Splunk.
+---
+
+## 4.6 Exporting Results to XML
+
 ```bash
 nmap -sV -oX nmap_results.xml 192.168.1.95/24
 ```
 
-### 4.2 Data Pipeline & File Synchronization
-- Provisioned an isolated host-to-guest shared mount point across VMware Fusion to bridge the architecture gap between Kali Linux and macOS.
-- Transported the output file `nmap_results.xml` directly into the dedicated Splunk data staging folder.
+---
 
-### 4.3 Data Ingestion Pipeline Setup
-1. Authenticated to the primary management dashboard at **Splunk Web** (`http://localhost:8000`).
-2. Navigated to the ingestion engine interface: **Settings** → **Add Data** → **Upload File**.
-3. Picked the target data artifact: `nmap_results.xml`.
-4. Mapped specific parsing criteria to the intake stream: `xml` or custom `nmap_logs` formatting configurations.
-5. Allocated data streams to a dedicated storage index: `nmap_index`.
-6. Finalized the submission and verified incoming data loops via active query auditing.
+# 📊 5. Splunk Data Ingestion Pipeline
 
-### 4.4 Advanced Splunk Analytics Queries
-Drafted explicit Splunk Search Processing Language (SPL) strings to process raw telemetry datasets into security visibility maps:
+## Splunk Upload Workflow
 
-#### Query 1: Global Open Port Inventory Summary
-Queries the index target to capture and output all instances of open ports across monitored network landscapes.
-```splunk
+1. Open Splunk Web
+
+```text
+http://localhost:8000
+```
+
+2. Navigate to:
+
+```text
+Settings → Add Data → Upload File
+```
+
+3. Upload:
+
+```text
+nmap_results.xml
+```
+
+4. Configure:
+- Source Type: `xml`
+- Index Name: `nmap_index`
+
+5. Verify successful ingestion.
+
+---
+
+# 📡 6. Splunk Analytics Queries
+
+## Query 1 — Open Port Inventory
+
+```spl
 index=nmap_index "open"
 ```
 
-#### Query 2: Open Port Metrics Density Matrix
-Transforms indexed logs into metrics, mapping the exact open connection density count per active host target.
-```splunk
+### 🖼️ SIEM Visibility Evidence
+
+<p align="center">
+  <img src="./screenshots/Suricata-Threat-Alerts.png" width="850"/>
+</p>
+
+---
+
+## Query 2 — Port Density Metrics by Host
+
+```spl
 index=nmap_index "open" | stats count by host
 ```
 
----
+### 🖼️ Service Monitoring Validation
 
-## 🖼️ 5. Visual Portfolio Case Study Evidence
-
-### 🛡️ Core Verification & Exploratory Triage
-*Isolating terminal command input constraints and auditing active default host-based rulesets prior to ingestion deployment scripts.*
-![Terminal Syntax Discrepancy](screenshots/1-Nmap-Syntax-Error.png)
-![Target UFW Active Rules](screenshots/4-Initial-Firewall-Rules.png)
-
-### 🥷 Active Scanning & Network Reconnaissance Simulation
-*Simulating explicit target sweeps from the adversary node via deep TCP/UDP mapping loops to build logging payloads.*
-![Nmap Host Reconnaissance](screenshots/2-Suricata-Threat-Alerts.png)
-
-### 📊 Defensive System Configuration Verification
-*Reviewing persistent background service daemons and spinning up standard infrastructure protection matrices.*
-![Suricata Systemd Initialization](screenshots/3-Suricata-Service-Status.png)
-![Target UFW Hardening](screenshots/5-Activating-Host-Firewall.png)
-
-### 🛑 Real-Time Telemetry Audit & Perimeter Hardening Action
-*Parsing active alert telemetry indices and committing immediate access control drop policies at the target firewall boundary.*
-![Target UFW Rule Enforcement](screenshots/6-Enforcing-Deny-Policy.png)
-![Target UFW Rule Enforcement 2](screenshots/7-Verifying-Blocked-IP.png)
+<p align="center">
+  <img src="./screenshots/Suricata-Service-Status.png" width="850"/>
+</p>
 
 ---
 
-## 📈 6. Results & Security Metrics
-The end-to-end telemetry pipeline achieved all security monitoring parameters:
-- **Exposed Surface Visibility:** Successfully isolated and registered active target inventories along with their explicit port layouts.
-- **Threat Vector Containment:** Validated the detection of high-risk network ports as soon as they were exposed on monitored segments.
-- **Version Tracking Accuracy:** Monitored system changes down to individual service version signatures to identify unpatched configurations.
+# 🔥 7. Infrastructure Hardening & Firewall Enforcement
+
+## Initial Firewall Rules Verification
+
+<p align="center">
+  <img src="./screenshots/Initial-Firewall-Rules.png" width="850"/>
+</p>
 
 ---
 
-## 🧠 7. Conclusion
- This lab demonstrates a functional architecture pattern for proactive internal network auditing. By linking scanning engines directly with structured log ingestion pipelines and big-data analytics platforms, defensive teams can spot infrastructure drift, pinpoint hidden vulnerabilities, and apply defensive countermeasures before a threat escalates into a full-scale compromise.
+## Activating Host-Based Firewall Policies
+
+<p align="center">
+  <img src="./screenshots/Activating-Host-Firewall.png" width="850"/>
+</p>
 
 ---
 
-## 🔮 8. Operational Security Recommendations
-- **Automated Scanning Schedules:** Deploy cron scripts to automatically execute scanning routines at standardized daily cycles.
-- **Vulnerability Data Enrichment:** Ingest parallel vulnerability assessment telemetry from engines like OpenVAS into `nmap_index` for deeper risk context.
-- **Incident Response Automation:** Configure Splunk alert actions to automatically forward high-severity detections straight to workflow managers (e.g., Jira Security/ServiceNow) to minimize mean time to remediation (MTTR).
+## Enforcing Explicit Deny Policies
+
+<p align="center">
+  <img src="./screenshots/Enforcing-Deny-Policy.png" width="850"/>
+</p>
 
 ---
 
-## 👨‍💻 Author
-**Sunday Ojeka**  
-*Cybersecurity Specialist & Aspiring SOC Analyst*  
-Focused on Security Log Orchestration, Infrastructure Reconnaissance, and SIEM Alert Architecture.
+## Verifying Blocked IP Restrictions
+
+<p align="center">
+  <img src="./screenshots/Verifying-Blocked-IP.png" width="850"/>
+</p>
+
+---
+
+# 🚨 8. Alert Engineering
+
+The SIEM environment was configured to generate automated alerts for:
+
+- Unauthorized host discovery
+- Critical port exposure
+- Service version drift
+- Suspicious infrastructure changes
+- Unusual network activity patterns
+
+---
+
+# 📈 9. Results & Security Metrics
+
+The monitoring architecture successfully achieved:
+
+✅ Live host identification
+
+✅ Open port enumeration
+
+✅ Service version tracking
+
+✅ SIEM data ingestion
+
+✅ Threat visibility dashboards
+
+✅ Automated security alerting
+
+✅ Infrastructure monitoring
+
+---
+
+# 🧠 10. Security Value of the Project
+
+This lab demonstrates how security teams can combine reconnaissance engines with centralized SIEM analytics to improve visibility and detect threats proactively.
+
+The project showcases:
+- Real-time infrastructure awareness
+- Centralized telemetry ingestion
+- Security event correlation
+- Faster threat detection workflows
+- Defensive monitoring capabilities
+
+---
+
+# 🔮 11. Operational Security Recommendations
+
+- Automate recurring scans using cron jobs
+- Integrate OpenVAS vulnerability telemetry
+- Add email or Slack alerting
+- Expand SIEM correlation rules
+- Integrate incident response ticketing systems
+
+---
+
+# ✅ 12. Conclusion
+
+This project demonstrates a practical enterprise workflow for proactive network monitoring using Nmap and Splunk Enterprise.
+
+By integrating reconnaissance, telemetry ingestion, SIEM analytics, dashboard visualization, and automated alerting, the lab provides a strong foundation for SOC monitoring and threat detection operations.
+
+The project strengthened practical skills in:
+- SIEM Engineering
+- Threat Detection
+- Security Monitoring
+- Network Reconnaissance
+- Infrastructure Visibility
+- Incident Response Concepts
+
+---
+
+# 👨‍💻 Author
+
+## Sunday Ojeka
+
+*Aspiring SOC Analyst | Cybersecurity Specialist*
+
+Focused on:
+- SOC Operations
+- Threat Detection
+- SIEM Engineering
+- Incident Response
+- Network Security
+- Blue Team Operations
+- Security Automation
+```
