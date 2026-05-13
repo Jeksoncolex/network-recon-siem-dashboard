@@ -140,6 +140,6 @@ This lab demonstrates a functional architecture pattern for proactive internal n
 ---
 
 ## 👨‍💻 Author
-**Sunday Ojeka**  
-*Cybersecurity Specialist & Aspiring SOC Analyst*  
-Focused on Security Log Orchestration, Infrastructure Reconnaissance, and SIEM Alert Architecture.
+**Sunday Ojeka**
+*Aspiring SOC Analyst | Cybersecurity Specialist*
+Focused on Blue Team Operations and Security Automation.
