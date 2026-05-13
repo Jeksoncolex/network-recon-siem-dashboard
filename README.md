@@ -100,23 +100,22 @@ index=nmap_index "open" | stats count by host
 
 ### 🛡️ Core Verification & Exploratory Triage
 *Isolating terminal command input constraints and auditing active default host-based rulesets prior to ingestion deployment scripts.*
-![Terminal Syntax Discrepancy](screenshots/1-Nmap-Syntax-Error.png)
-![Target UFW Active Rules](screenshots/4-Initial-Firewall-Rules.png)
+![Terminal Syntax Discrepancy](screenshots/Nmap-Syntax-Error.png)
+![Target UFW Active Rules](screenshots/Initial-Firewall-Rules.png)
 
 ### 🥷 Active Scanning & Network Reconnaissance Simulation
 *Simulating explicit target sweeps from the adversary node via deep TCP/UDP mapping loops to build logging payloads.*
-![Nmap Host Reconnaissance](screenshots/2-Suricata-Threat-Alerts.png)
+![Nmap Host Reconnaissance](screenshots/Suricata-Threat-Alerts.png)
 
 ### 📊 Defensive System Configuration Verification
 *Reviewing persistent background service daemons and spinning up standard infrastructure protection matrices.*
-![Suricata Systemd Initialization](screenshots/3-Suricata-Service-Status.png)
-![Target UFW Hardening](screenshots/5-Activating-Host-Firewall.png)
+![Suricata Systemd Initialization](screenshots/Suricata-Service-Status.png)
+![Target UFW Hardening](screenshots/Activating-Host-Firewall.png)
 
 ### 🛑 Real-Time Telemetry Audit & Perimeter Hardening Action
 *Parsing active alert telemetry indices and committing immediate access control drop policies at the target firewall boundary.*
-![Target UFW Rule Enforcement](screenshots/6-Enforcing-Deny-Policy.png)
-![Target UFW Rule Enforcement 2](screenshots/7-Verifying-Blocked-IP.png)
-
+![Target UFW Rule Enforcement](screenshots/Enforcing-Deny-Policy.png)
+![Target UFW Rule Enforcement 2](screenshots/Verifying-Blocked-IP.png)
 
 ---
 
@@ -129,7 +128,7 @@ The end-to-end telemetry pipeline achieved all security monitoring parameters:
 ---
 
 ## 🧠 7. Conclusion
- This lab demonstrates a functional architecture pattern for proactive internal network auditing. By linking scanning engines directly with structured log ingestion pipelines and big-data analytics platforms, defensive teams can spot infrastructure drift, pinpoint hidden vulnerabilities, and apply defensive countermeasures before a threat escalates into a full-scale compromise.
+This lab demonstrates a functional architecture pattern for proactive internal network auditing. By linking scanning engines directly with structured log ingestion pipelines and big-data analytics platforms, defensive teams can spot infrastructure drift, pinpoint hidden vulnerabilities, and apply defensive countermeasures before a threat escalates into a full-scale compromise.
 
 ---
 
